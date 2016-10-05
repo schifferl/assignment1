@@ -1,0 +1,64 @@
+---
+title: "assignment1"
+author: "Lucas Schiffer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+library(readxl)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(knitr)
+```
+
+## Introduction
+
+This vignette is part of a large R package concerning assignment1 for BIOS 621; 
+a GitHub repository containing the package can be found at 
+https://github.com/schifferl/assignment1. Similarly, the build html vignette can
+be found on RPubs at http://rpubs.com/schifferl/assignment1. Both links 
+represent work in progress and should be interpreted accordingly. This vignette 
+intends to reproduce the results given in the 2011 Chou et al. paper^[Chou, B., 
+Krill, L. S., Horton, B. B., Barat, C. E. & Trimble, C. L. Disparities in Human 
+Papillomavirus Vaccine Completion Among Vaccine Initiators. Obstetrics & 
+Gynecology 118, 14–20 (2011).].
+
+## Methods
+
+$$\ln(OR)=\beta_0+AgeGroup\ x_1+InsuranceType\ x_2+LocationType\ x_3+
+PracticeType\ x_4+Race\ x_5$$
+
+## Results
+
+```{r}
+read_excel("../data-raw/gardasil.xls") %>%
+summarise("11-17" = sum(AgeGroup==0), "18-24" = sum(AgeGroup==1), 
+          "Public" = sum(MedAssist==1), "Private" = sum(MedAssist==0),
+          "Suburban" = sum(LocationType==0), "Urban" = sum(LocationType==1),
+          "Pediatrics" = sum(PracticeType==0), 
+          "Family practice" = sum(PracticeType==1), 
+          "Gynecology" = sum(PracticeType==2), "White" = sum(Race==0), 
+          "Minority" = sum(Race==1|Race==2), 
+          "African American" = sum(Race==1), "Hispanic" = sum(Race==2), 
+          "Other" = sum(Race==3)) %>%
+gather() %>% 
+kable(., col.names = c("", "n"))
+```
+
+
+```{r}
+read_excel("./data-raw/gardasil.xls") %>%
+glm(Completed ~ AgeGroup + InsuranceType + LocationType + PracticeType + Race,
+    family = binomial(), data = .) %>%
+summary()
+```
+
+## Discussion
+
+## References
