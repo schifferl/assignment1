@@ -1,25 +1,26 @@
 ---
 title: "assignment1"
 author: "Lucas Schiffer"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+date: "September 29, 2016"
+output: html_document
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{assignment1}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+css: style.css
 ---
 
 ```{r include=FALSE}
-library(readxl)
 library(magrittr)
+library(readxl)
 library(dplyr)
-library(tidyr)
 library(knitr)
+library(assignment1)
 ```
 
 ## Introduction
 
-This vignette is part of a large R package concerning assignment1 for BIOS 621; 
+This vignette is part of a larger R package concerning assignment1 for BIOS 621; 
 a GitHub repository containing the package can be found at 
 https://github.com/schifferl/assignment1. Similarly, the build html vignette can
 be found on RPubs at http://rpubs.com/schifferl/assignment1. Both links 
@@ -31,34 +32,97 @@ Gynecology 118, 14–20 (2011).].
 
 ## Methods
 
-$$\ln(OR)=\beta_0+AgeGroup\ x_1+InsuranceType\ x_2+LocationType\ x_3+
-PracticeType\ x_4+Race\ x_5$$
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+```{r}
+labels_AgeGroup <- c("18-26", "11-17")
+labels_Race <- c("White", "African American", "Hispanic", "Other/Unknown")
+labels_Shots <- c("Received 1 Shot", "Received 2 Shots", "Received 3 Shots")
+labels_Completed <- c("Noncompleter", "Completer")
+labels_InsuranceType <- c("Public", "Private payer", "Hospital–based",
+                          "Military")
+labels_MedAssist <- c("Public", "Private")
+labels_Location <- c("Johns Hopkins Odenton", "Johns Hopkins White Marsh",
+                     "Johns Hopkins Outpatient Center",
+                     "Johns Hopkins Bayview Medical Offices")
+labels_LocationType <- c("Urban", "Suburban")
+labels_PracticeType <- c("Pediatrics", "Family practice", "Gynecology")
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+```{r}
+gardasil <- read_excel("../inst/extdata/gardasil.xls") %>%
+mutate(., AgeGroup = factor(AgeGroup, 1:0, labels_AgeGroup)) %>%
+mutate(., Race = factor(Race, 0:3, labels_Race)) %>%
+mutate(., Shots = factor(Shots, 1:3, labels_Shots)) %>%
+mutate(., Completed = factor(Completed, 0:1, labels_Completed)) %>%
+mutate(., InsuranceType = factor(InsuranceType, 0:3, labels_InsuranceType)) %>%
+mutate(., MedAssist = factor(MedAssist, 1:0, labels_MedAssist)) %>%
+mutate(., Location = factor(Location, 1:4, labels_Location)) %>%
+mutate(., LocationType = factor(LocationType, 1:0, labels_LocationType)) %>%
+mutate(., PracticeType = factor(PracticeType, 0:2, labels_PracticeType))
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+$$s=\sqrt{\frac{1}{y} \frac{x}{y}\left(1-\frac{x}{y}\right)}$$
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+$$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+MedAssist\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+InsuranceType\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+LocationType\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+PracticeType\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+Minority\ x_1$$
+
+$$\ln(OR_{Completed})=\beta_0+Race\ x_1$$
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+$$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1+MedAssist\ x_2+InsuranceType\ x_3+
+LocationType\ x_4+PracticeType\ x_5+Minority\ x_6$$
+
+$$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1+MedAssist\ x_2+InsuranceType\ x_3+
+LocationType\ x_4+PracticeType\ x_5+Race\ x_6$$
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
 
 ## Results
 
-```{r}
-read_excel("../data-raw/gardasil.xls") %>%
-summarise("11-17" = sum(AgeGroup==0), "18-24" = sum(AgeGroup==1), 
-          "Public" = sum(MedAssist==1), "Private" = sum(MedAssist==0),
-          "Suburban" = sum(LocationType==0), "Urban" = sum(LocationType==1),
-          "Pediatrics" = sum(PracticeType==0), 
-          "Family practice" = sum(PracticeType==1), 
-          "Gynecology" = sum(PracticeType==2), "White" = sum(Race==0), 
-          "Minority" = sum(Race==1|Race==2), 
-          "African American" = sum(Race==1), "Hispanic" = sum(Race==2), 
-          "Other" = sum(Race==3)) %>%
-gather() %>% 
-kable(., col.names = c("", "n"))
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+Table_1() %>%
+kable(col.names = c("", "n (%)", "Received 1 Shot", "Received 2 Shots", 
+                            "Completer", "Noncompleter"),
+      caption = "Table 1. Demographics of Study Cohort")
 ```
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
 
-```{r}
-read_excel("./data-raw/gardasil.xls") %>%
-glm(Completed ~ AgeGroup + InsuranceType + LocationType + PracticeType + Race,
-    family = binomial(), data = .) %>%
-summary()
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+Table_2() %>%
+kable(caption = "Table 2. Human Papillomavirus Vaccination Completion Rates, Univariable Analysis (N=1,413)")
 ```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+Table_3() %>% 
+kable(caption = "Table 3. Multivariable Logistic Regression Analysis of Predictors of Human Papillomavirus Vaccine Completion")
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
 
 ## Discussion
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
 
 ## References
