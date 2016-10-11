@@ -22,9 +22,8 @@ library(assignment1)
 
 This vignette is part of a larger R package concerning assignment1 for BIOS 621; 
 a GitHub repository containing the package can be found at 
-https://github.com/schifferl/assignment1. Similarly, the build html vignette can
-be found on RPubs at http://rpubs.com/schifferl/assignment1. Both links 
-represent work in progress and should be interpreted accordingly. This vignette 
+https://github.com/schifferl/assignment1. Similarly, the built html vignette can
+be found on RPubs at http://rpubs.com/schifferl/assignment1. This vignette 
 intends to reproduce the results given in the 2011 Chou et al. paper^[Chou, B., 
 Krill, L. S., Horton, B. B., Barat, C. E. & Trimble, C. L. Disparities in Human 
 Papillomavirus Vaccine Completion Among Vaccine Initiators. Obstetrics & 
@@ -32,7 +31,10 @@ Gynecology 118, 14–20 (2011).].
 
 ## Methods
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+Data related to the paper were provided by Levi Waldron, PhD in Microsoft Excel 
+format (i.e. a .xls file), along with basic formatting code from which 
+appropriate labels could be deduced. Labels were determined and serialized in 
+the R environment as is shown in the subsequent code block.
 
 ```{r}
 labels_AgeGroup <- c("18-26", "11-17")
@@ -49,7 +51,15 @@ labels_LocationType <- c("Urban", "Suburban")
 labels_PracticeType <- c("Pediatrics", "Family practice", "Gynecology")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+With the serialization of the variable labels, the Excel file was then read in 
+using the readxl^[Hadley Wickham (2016). readxl: Read Excel Files. R package 
+version 0.1.1. https://CRAN.R-project.org/package=readxl] package and all the 
+variables, save for age, were interpreted to be categorical. The endomorphism of
+the `data_frame` class was used in the manipulation of the data between readxl 
+and dplyr^[Hadley Wickham and Romain Francois (2016). dplyr: A Grammar of Data 
+Manipulation. R package version 0.5.0. https://CRAN.R-project.org/package=dplyr] 
+commands. Syntax used in the serialization of data and interpolation of variable
+labels is shown in the subsequent code block.
 
 ```{r}
 gardasil <- read_excel("../inst/extdata/gardasil.xls") %>%
@@ -64,11 +74,25 @@ mutate(., LocationType = factor(LocationType, 1:0, labels_LocationType)) %>%
 mutate(., PracticeType = factor(PracticeType, 0:2, labels_PracticeType))
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+In order to reconstruct table 1 of the Chou et al. paper it was necessary to 
+calculate sample standard deviation measures from the counts of categorical 
+variables. The following formula^[https://stats.stackexchange.com/questions/
+74797/calculating-standard-deviation-of-percentages] was used whereby $x$ 
+represented a count within a category and $y$ represented the total of the 
+category itself. Numerous functions were written so as to automate the process 
+and a final reconstruction of table 1 was achieved using dplyr syntax.
 
 $$s=\sqrt{\frac{1}{y} \frac{x}{y}\left(1-\frac{x}{y}\right)}$$
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+Similarly, the reconstruction of table 2 from the Chou et al. paper required a 
+series of univariate generalized linear models from which the coefficients could 
+be abstracted. The series of models was built as is subsequently specified and 
+the reader may note that there is no variable $Minority$ previously devised in 
+the serialization syntax. In order to produce results similar to the Chou et al. 
+paper it was necessary to construct the $Minority$ variable from the $Race$ 
+variable, considering $Minority$ to be either `"African American"` or 
+`"Hispanic"`. In the case where $Race$ was `"Other/Unknown"` it was necessary to
+exclude these cases from the analysis to obtain a result similar to Chou et al.
 
 $$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1$$
 
@@ -84,19 +108,39 @@ $$\ln(OR_{Completed})=\beta_0+Minority\ x_1$$
 
 $$\ln(OR_{Completed})=\beta_0+Race\ x_1$$
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
-
-$$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1+MedAssist\ x_2+InsuranceType\ x_3+
-LocationType\ x_4+PracticeType\ x_5+Minority\ x_6$$
+Finally, the reconstruction of table 3 required the construction of two 
+multivariate logistic regression models - one that accounted for the missing 
+cases within the $Minority$ category and another that excluded them. The results 
+that are presented in the reconstructed table 3 represent coefficients from both 
+models, given that it was necessary for reproduction. All but the $Minority$ 
+coefficient come from the first model (i.e. where $\beta_6=Race$). There was a 
+difference in number of observations between the two models by 186, with the 
+model where $\beta_6=Race$ having the greater number. It did seem like a 
+dishonest mistake, albeit perhaps committed honestly, and the implications are 
+further discussed herein.
 
 $$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1+MedAssist\ x_2+InsuranceType\ x_3+
 LocationType\ x_4+PracticeType\ x_5+Race\ x_6$$
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+$$\ln(OR_{Completed})=\beta_0+AgeGroup\ x_1+MedAssist\ x_2+InsuranceType\ x_3+
+LocationType\ x_4+PracticeType\ x_5+Minority\ x_6$$
+
+It is noted that, in all models, the 95% confidence intervals were calculated 
+using the standard error multiplied by the Z score for a probability density of 
+0.95 taken to 7 significant figures. In the absence of further information in 
+the Chou et al. paper as to how the confidence intervals were calculated, the 
+method was conservatively selected.
 
 ## Results
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+To the exception of sample standard deviation percentages, it was possible to 
+reproduce table 1 exactly as it was presented in the Chou et al. paper. There 
+was a bit of experimentation necessary to determine that the 
+`"Received 2 Shots"` category in fact contained anyone who had received 3 shots 
+but had done so outside of the 12 month window and had thus been labeled a 
+`"Noncompleter"`, in addition to those who had actually received 2 shots. The 
+reconstructed table 1 is shown below, with sample standard deviation percentages
+calculated as specified in the methods.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 Table_1() %>%
@@ -105,24 +149,63 @@ kable(col.names = c("", "n (%)", "Received 1 Shot", "Received 2 Shots",
       caption = "Table 1. Demographics of Study Cohort")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+It was also possible to reproduce table 2 almost identically to the one 
+presented in the Chou et al. paper, with slight divergences happening around the
+confidence intervals and one of the p values. These differences are perhaps due 
+to the exactness of the calculations and the internal implementations of the 
+statistical methods within software used to calculate the confidence intervals. 
+With the multiplication of the standard error by the Z score a confidence 
+interval more narrow than than presented in the Chou et al. paper was achieved, 
+as is shown in the reconstructed table 2 below.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 Table_2() %>%
-kable(caption = "Table 2. Human Papillomavirus Vaccination Completion Rates, Univariable Analysis (N=1,413)")
+kable(caption = "Table 2. Human Papillomavirus Vaccination Completion Rates, 
+      Univariable Analysis (N=1,413)")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+The reproduction of table 3 was unique among the others in that it was not 
+possible to reproduce the results of Chou et al., even after significant 
+experimentation. In the absence of sufficient detail for reproducibility, it was 
+necessary to abstract coefficients from multiple models and results were 
+approximately equal to those of Chou et al. but the exact results could not be 
+attained. All coefficients and p values were within about 10% of the published 
+values and are presented in the reproduced table 3 below.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 Table_3() %>% 
-kable(caption = "Table 3. Multivariable Logistic Regression Analysis of Predictors of Human Papillomavirus Vaccine Completion")
+kable(caption = "Table 3. Multivariable Logistic Regression Analysis of 
+      Predictors of Human Papillomavirus Vaccine Completion")
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+By the end of attempting to reproduce tables 1, 2, and 3 of the Chou et al. 
+paper, it became clear that subtle differences persisted across all three tables
+and no one table was an exact replica of the published variant. The differences 
+are most likely attributable to use of statistical methods and software, with 
+the reproduced and published results generally showing concordance.
 
 ## Discussion
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis odio nec orci facilisis bibendum. Pellentesque cursus facilisis tempus. Vivamus elementum quam sit amet diam elementum, vitae faucibus quam consectetur. Pellentesque non nisl tempor, egestas turpis quis, ultrices tortor. In hac habitasse platea dictumst. Duis at fringilla elit. Maecenas pulvinar velit nisi, vel porta tellus viverra vel. Proin id accumsan arcu. Suspendisse potenti. Integer bibendum nec mauris blandit accumsan. Duis pellentesque porttitor arcu, sit amet feugiat eros rutrum iaculis. Maecenas sagittis orci ac ipsum varius tempor nec sed tellus. Phasellus consectetur sem nec magna blandit, placerat commodo enim sollicitudin. Aliquam consectetur eros a cursus interdum.
+As this and the Chou et al. analysis showed, $InsuranceType$ was found to be the
+strongest predictor of Gardasil HPV vaccine series completion. Considering 
+$InsuranceType$ a modifiable risk factor then, it begs the question of if 
+modification would provide any shift in completion. To a limited extent perhaps 
+it would, but it is rather more important to consider the situation whereby 
+$InsuranceType$ is merely a proxy for socioeconomic status. In classical studies
+of socioeconomic status, such as the Whitehall Study^[Marmot, M. G., Rose, G., 
+Shipley, M. & Hamilton, P. J. Employment grade and coronary heart disease in 
+British civil servants. J Epidemiol Community Health 32, 244–249 (1978).], it 
+becomes clear that much of what dictates personal behavior is based in relation 
+to feelings of autonomy. Furthermore, beyond the issues related to multiple 
+collinearity^[Vatcheva, K. P., Lee, M., McCormick, J. B. & Rahbar, M. H. 
+Multicollinearity in Regression Analyses Conducted in Epidemiologic Studies. 
+Epidemiology (Sunnyvale) 6, (2016).], it would be important to consider 
+$InsuranceType$ in the overall context of epidemiological studies and the 
+multiplicity of complex exposures^[Patel, C. J. & Ioannidis, J. P. A. Placing 
+epidemiological results in the context of multiplicity and typical correlations 
+of exposures. J Epidemiol Community Health 68, 1096–1100 (2014).]. In the 
+absence of further study that might validate the correlation of interest and 
+validate its significance, it would be rash to assume causation on correlation 
+alone.
 
 ## References
