@@ -1,7 +1,7 @@
 ---
 title: "assignment1"
 author: "Lucas Schiffer"
-date: "September 29, 2016"
+date: "September 28, 2016"
 output: html_document
 vignette: >
   %\VignetteIndexEntry{assignment1}
